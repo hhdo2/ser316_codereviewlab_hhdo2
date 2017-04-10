@@ -1,7 +1,10 @@
 package banking.primitive.core;
 
 public class Checking extends Account {
-
+	private static final int _WITHDRAWALS_LIMIT = 10;
+	private static final float _WITHDRAWAL_FEE = 2.0f;
+	private static final float _BLANCE_LIMIT = -100.0f;
+	
 	private static final long serialVersionUID = 11L;
 	private int numWithdraws = 0;
 	
@@ -39,11 +42,11 @@ public class Checking extends Account {
 	public boolean withdraw(float amount) {
 		if (amount > 0.0f) {		
 			// KG: incorrect, last balance check should be >=
-			if (getState() == State.OPEN || (getState() == State.OVERDRAWN && balance > -100.0f)) {
+			if (getState() == State.OPEN || (getState() == State.OVERDRAWN && balance > _BLANCE_LIMIT)) {
 				balance = balance - amount;
 				numWithdraws++;
-				if (numWithdraws > 10)
-					balance = balance - 2.0f;
+				if (numWithdraws > _WITHDRAWALS_LIMIT)
+					balance = balance - _WITHDRAWAL_FEE;
 				if (balance < 0.0f) {
 					setState(State.OVERDRAWN);
 				}
